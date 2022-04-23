@@ -1,0 +1,91 @@
+label,
+input,
+textarea {
+  display: block;
+  margin: 0.5rem 0;
+}
+
+input,
+textarea {
+  width: 100%;
+  font: inherit;
+  padding: 0.15rem 0.25rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: #4b4bdb;
+}
+
+section {
+  width: 40rem;
+  max-width: 90%;
+  margin: 2rem auto;
+  border: 2px solid beige;
+  border-radius: 10px;
+  padding: 1.5rem;
+  background-color: beige;
+  box-shadow: 5px 10px 80px;
+}
+
+.formcontrol {
+  margin: 0.5rem 0;
+}
+
+.formcontrol.invalid input {
+  outline: none;
+  border: 2px solid #8b005d;
+}
+
+.formcontrol.invalid textarea {
+  outline: none;
+  border: 2px solid #8b005d;
+}
+
+.buttonadd {
+  padding: 0.5rem 1.5rem;
+  margin-top: 15px;
+  border: 1px solid rgb(92, 92, 236);
+  color: white;
+  background-color: rgb(92, 92, 236);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.26);
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.buttonadd:focus {
+  outline: none;
+}
+
+.buttonadd:hover,
+.buttonadd:active {
+  background-color: blue;
+  border-color: blue;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.26);
+}
+
+.buttonclear {
+  padding: 0.5rem 1.5rem;
+  margin-left: 4px;
+  margin-top: 15px;
+  border: 1px solid rgb(241, 123, 160);
+  color: white;
+  background-color: rgb(241, 123, 160);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.26);
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.buttonclear:focus {
+  outline: none;
+}
+
+.buttonclear:hover,
+.buttonclear:active {
+  background-color: rgb(255, 0, 0);
+  border-color: rgb(255, 0, 0);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.26);
+}
