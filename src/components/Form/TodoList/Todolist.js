@@ -1,21 +1,35 @@
-import { React } from "react";
+import React, { useContext } from "react";
 import Todoitem from "./Todoitem/Todoitem";
 import styles from "./Todolist.module.css";
+import Context from "../contexts/todo-context";
 
-const Todolist = (props) => {
+const Todolist = () => {
+  const { todoList } = useContext(Context);
+
   return (
-    <ul className={styles.posts}>
-      {props.todos.map((todo) => (
-        <Todoitem
-          key={todo.key}
-          id={todo.id}
-          title={todo.title}
-          body={todo.body}
-          onDelete={props.onDeleteItem}
-        ></Todoitem>
-      ))}
-    </ul>
+    // <Context.Consumer>
+    //   {({ todoList }) => {
+    //     return (
+    <section>
+      <ul className={styles.posts}>
+        {todoList?.map((todo) => {
+          return (
+            <Todoitem
+              key={`${Math.random() * 3.14 - 5.11}`}
+              id={todo.id}
+              title={todo.title}
+              body={todo.body}
+              time={todo.time}
+              completed={todo.completed}
+            />
+          );
+        })}
+      </ul>
+    </section>
   );
+  //     }}
+  //   </Context.Consumer>
+  // );
 };
 
 export default Todolist;

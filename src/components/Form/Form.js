@@ -1,101 +1,98 @@
-import { React, useState } from "react";
+import { React, useContext, useReducer, useEffect, useId } from "react";
 import Button from "../Button/Button";
 import styles from "./Form.module.css";
-import Todolist from "./TodoList/Todolist";
+import { titleReducer, bodyReducer } from "./reducers/form-reducer";
+import Context from "./contexts/todo-context";
 
 const Form = () => {
-  const [todoList, setTodoList] = useState([]);
-  const [enteredTitle, setEnteredValue] = useState("");
-  const [enteredBody, setEnteredBody] = useState("");
-  const [isValid, setIsValid] = useState(true);
+  const [todoTitleState, dispatchTitle] = useReducer(titleReducer, {
+    value: "",
+    isValid: false,
+    isTouched: false,
+  });
+  const [todoBodyState, dispatchBody] = useReducer(bodyReducer, {
+    value: "",
+    isValid: false,
+    isTouched: false,
+  });
+
+  useEffect(() => {
+    if (todoTitleState.value.length === 0) {
+      return;
+    }
+    let timeOut = setTimeout(() => {
+      return localStorage.setItem(
+        Math.random().toFixed(2),
+        todoTitleState.value
+      );
+    }, 1000);
+
+    return () => {
+      clearTimeout(timeOut);
+    };
+  }, [todoTitleState.value]);
+
+  const title = useId();
+  const body = useId();
+
+  const { addTodoHandler, clearTodoHandler, sectionStyle } =
+    useContext(Context);
 
   const titleChangeHandler = (event) => {
-    if (event.target.value.trim().length > 0) {
-      setIsValid(true);
-    }
-    setEnteredValue(event.target.value);
+    dispatchTitle({ type: "NEW_TITLE", value: event.target.value.trim() });
   };
 
   const bodyChangeHandler = (event) => {
-    if (event.target.value.trim().length > 0) {
-      setIsValid(true);
-    }
-    setEnteredBody(event.target.value);
+    dispatchBody({ type: "NEW_BODY", value: event.target.value.trim() });
   };
 
-  const formSubmitHandler = (event) => {
+  const submitHandler = (event) => {
     event.preventDefault();
-    if (enteredTitle.trim().length === 0 || enteredBody.trim().length === 0) {
-      setIsValid(false);
-      return;
-    }
-
-    addTodoHandler(enteredTitle, enteredBody);
-    setEnteredValue("");
-    setEnteredBody("");
+    console.log("submit");
+    addTodoHandler(todoTitleState.value, todoBodyState.value);
+    dispatchTitle({ type: "AFTER_SUBMIT" });
+    dispatchBody({ type: "AFTER_SUBMIT" });
   };
-
-  function addTodoHandler(enteredTitle, enteredBody) {
-    setTodoList((prevTodo) => {
-      const updatedTodo = [...prevTodo];
-      let id = Math.random().toString();
-      updatedTodo.unshift({
-        key: id,
-        id: id,
-        title: enteredTitle,
-        body: enteredBody,
-      });
-      return updatedTodo;
-    });
-    console.log(todoList);
-  }
-
-  const deleteTodoHandler = (todoId) => {
-    setTodoList((prevTodo) => {
-      const updatedTodo = prevTodo.filter((todo) => todo.id !== todoId);
-      return updatedTodo;
-    });
-  };
-
-  const clearTodoHandler = () => {
-    let emptyTodo = [...todoList];
-    emptyTodo.splice(0, emptyTodo.length);
-    setTodoList(emptyTodo);
-  };
-
-  let content = <p style={{ textAlign: "center" }}>No tasks added</p>;
-
-  if (todoList.length) {
-    content = <Todolist todos={todoList} onDeleteItem={deleteTodoHandler} />;
-  }
 
   return (
-    <section id="new-post">
-      <form onSubmit={formSubmitHandler}>
-        <div
-          className={`${styles.formcontrol} ${!isValid ? styles.invalid : ""}`}
-        >
-          <label>
+    // <Context.Consumer>
+    //   {({ addTodoHandler, clearTodoHandler }) => {
+    //     return (
+    <section className={sectionStyle}>
+      <form onSubmit={submitHandler}>
+        <div>
+          <label htmlFor={title}>
             <strong>Task title</strong>
           </label>
           <input
             type="text"
-            id="title"
+            id={title}
             onChange={titleChangeHandler}
-            value={enteredTitle}
+            onBlur={titleChangeHandler}
+            value={todoTitleState.value}
+            className={`${styles.formcontrol} ${
+              !todoTitleState.isValid && todoTitleState.isTouched
+                ? styles.invalidinput
+                : ""
+            }`}
           />
         </div>
-        <div
-          className={`${styles.formcontrol} ${!isValid ? styles.invalid : ""}`}
-        >
-          <label>
+
+        <div>
+          <label htmlFor={body}>
             <strong>Description</strong>
           </label>
           <textarea
             rows="3"
-            id="content"
+            id={body}
             onChange={bodyChangeHandler}
-            value={enteredBody}
+            onBlur={bodyChangeHandler}
+            value={todoBodyState.value}
+            className={`${styles.formcontrol} ${
+              !todoBodyState.isValid && todoBodyState.isTouched
+                ? styles.invalidtextarea
+                : ""
+            }`}
           ></textarea>
         </div>
         <Button type="submit" style={styles.buttonadd}>
@@ -105,15 +102,16 @@ const Form = () => {
           type="button"
           style={styles.buttonclear}
           onClick={clearTodoHandler}
+          disabled={false}
         >
           Clear
         </Button>
       </form>
-      <br></br>
-      <br></br>
-      {content}
     </section>
   );
+  //     }}
+  //   </Context.Consumer>
+  // );
 };
 
 export default Form;
